@@ -24,6 +24,7 @@ group :test do
   gem 'puppet-lint-variable_contains_upcase',                       :require => false
   gem 'metadata-json-lint',                                         :require => false
   gem 'puppet-blacksmith',                                          :require => false
+  gem 'pry',                                                        :require => false
   gem 'voxpupuli-release',                                          :require => false, :git => 'https://github.com/voxpupuli/voxpupuli-release-gem.git'
   gem 'puppet-strings', '0.4.0',                                    :require => false
   gem 'rubocop-rspec', '~> 1.6',                                    :require => false if RUBY_VERSION >= '2.3.0'
