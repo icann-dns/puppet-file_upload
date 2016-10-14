@@ -94,8 +94,8 @@ Main class, includes all other classes
 
 ##### Parameters 
 
-* `upload_script (Tea::Puppetsource, Default: '/usr/local/bin/file_upload.sh')`: Where to install the upload script
-* `modules (Hash[file_upload::upload], Default: {})`: 
+* `upload_script` (Tea::Puppetsource, Default: '/usr/local/bin/file_upload.sh'): Where to install the upload script
+* `modules` (Hash[file_upload::upload], Default: {}): A Hash of file_upload::upload objects to be passtd to `create_resources()`
 
 ### Defines
 
