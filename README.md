@@ -28,7 +28,7 @@ This module installs provides mnages cron jobs to copy files to an ofline locati
 
 ### What file_upload affects
 
-* installs an upload scrip 
+* installs an upload script
 * manages cron jobs to upload files
 
 ### Setup Requirements
