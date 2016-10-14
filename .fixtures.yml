@@ -8,4 +8,7 @@ fixtures:
       tea:
         repo: https://github.com/icann-dns/puppet-tea.git
         ref: 0.2.4
+      logrotate:
+        repo: https://github.com/icann-dns/puppet-logrotate
+        ref: v1.4.0-ICANN-1
     forge_modules:
