@@ -7,7 +7,7 @@ describe 'file_upload::upload' do
   # to the specific context in the spec/shared_contexts.rb file
   # Note: you can only use a single hiera context per describe/context block
   # rspec-puppet does not allow you to swap out hiera data on a per test block
-  #include_context :hiera
+  # include_context :hiera
 
   let(:title) { 'test_upload' }
 
@@ -45,9 +45,7 @@ describe 'file_upload::upload' do
   # add these two lines in a single test block to enable puppet and hiera debug mode
   # Puppet::Util::Log.level = :debug
   # Puppet::Util::Log.newdestination(:console)
-  let (:pre_condition) {
-    "class {'::file_upload': }"
-  }
+  let(:pre_condition) { "class {'::file_upload': }" }
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
@@ -56,39 +54,33 @@ describe 'file_upload::upload' do
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('file_upload') }
-        
         it do
-          is_expected.to contain_file('/root/.ssh/test_upload')
-          .with(
+          is_expected.to contain_file('/root/.ssh/test_upload').with(
             ensure: 'present',
             mode: '0600',
-            source: 'puppet:///modules/module_files/id_rsa',
+            source: 'puppet:///modules/module_files/id_rsa'
           )
         end
-                
         it do
-          is_expected.to contain_cron('file_upload-test_upload')
-          .with(
+          is_expected.to contain_cron('file_upload-test_upload').with(
             ensure: 'present',
-            command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+            command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
           )
         end
-                
-        if facts[:kernel] != 'FreeBSD' then
+        if facts[:kernel] != 'FreeBSD'
           it do
-            is_expected.to contain_logrotate__rule('file_upload-test_upload')
-            .with(
+            is_expected.to contain_logrotate__rule('file_upload-test_upload').with(
               path: '/var/log/file_upload-test_upload.log',
               rotate: 5,
               size: '100M',
               compress: true,
               create_mode: '0644',
-              create: true,
+              create: true
             )
           end
         else
           it do
-             is_expected.to_not contain_logrotate__rule('file_upload-test_upload')
+            is_expected.not_to contain_logrotate__rule('file_upload-test_upload')
           end
         end
       end
@@ -111,18 +103,16 @@ describe 'file_upload::upload' do
           before { params.merge!(key_dir: '/foo/bar') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_file('/foo/bar/test_upload')
-            .with(
+            is_expected.to contain_file('/foo/bar/test_upload').with(
               ensure: 'present',
               mode: '0600',
-              source: 'puppet:///modules/module_files/id_rsa',
+              source: 'puppet:///modules/module_files/id_rsa'
             )
           end
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /foo/bar/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /foo/bar/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -130,10 +120,9 @@ describe 'file_upload::upload' do
           before { params.merge!(clean_known_hosts: true) }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log -C   -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log -C   -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -141,10 +130,9 @@ describe 'file_upload::upload' do
           before { params.merge!(delete: true) }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log  -e  -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log  -e  -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -152,21 +140,19 @@ describe 'file_upload::upload' do
           before { params.merge!(remove_source_files: true) }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log   -E -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log   -E -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
         context 'patterns' do
-          before { params.merge!(patterns: ['foo', 'bar']) }
+          before { params.merge!(patterns: %w(foo bar)) }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'foo bar\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'foo bar\''
             )
           end
         end
@@ -174,10 +160,9 @@ describe 'file_upload::upload' do
           before { params.merge!(bwlimit: 1234) }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 1234 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 1234 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -185,10 +170,9 @@ describe 'file_upload::upload' do
           before { params.merge!(destination_host: 'foobar.example.com') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D foobar.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D foobar.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -196,10 +180,9 @@ describe 'file_upload::upload' do
           before { params.merge!(destination_path: '/foo/bar') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /foo/bar -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /foo/bar -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -207,11 +190,10 @@ describe 'file_upload::upload' do
           before { params.merge!(ssh_key_source: 'puppet:///modules/foo/bar') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_file('/root/.ssh/test_upload')
-            .with(
+            is_expected.to contain_file('/root/.ssh/test_upload').with(
               ensure: 'present',
               mode: '0600',
-              source: 'puppet:///modules/foo/bar',
+              source: 'puppet:///modules/foo/bar'
             )
           end
         end
@@ -219,10 +201,9 @@ describe 'file_upload::upload' do
           before { params.merge!(ssh_user: 'foobar') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u foobar -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u foobar -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -230,10 +211,9 @@ describe 'file_upload::upload' do
           before { params.merge!(log_file: '/tmp/log') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /tmp/log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /tmp/log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -247,16 +227,15 @@ describe 'file_upload::upload' do
         context 'logrotate_rotate' do
           before { params.merge!(logrotate_rotate: 1) }
           it { is_expected.to compile }
-          if facts[:kernel] != 'FreeBSD' then
+          if facts[:kernel] != 'FreeBSD'
             it do
-              is_expected.to contain_logrotate__rule('file_upload-test_upload')
-              .with(
+              is_expected.to contain_logrotate__rule('file_upload-test_upload').with(
                 path: '/var/log/file_upload-test_upload.log',
                 rotate: 1,
                 size: '100M',
                 compress: true,
                 create_mode: '0644',
-                create: true,
+                create: true
               )
             end
           end
@@ -264,16 +243,15 @@ describe 'file_upload::upload' do
         context 'logrotate_size' do
           before { params.merge!(logrotate_size: '1G') }
           it { is_expected.to compile }
-          if facts[:kernel] != 'FreeBSD' then
+          if facts[:kernel] != 'FreeBSD'
             it do
-              is_expected.to contain_logrotate__rule('file_upload-test_upload')
-              .with(
+              is_expected.to contain_logrotate__rule('file_upload-test_upload').with(
                 path: '/var/log/file_upload-test_upload.log',
                 rotate: '5',
                 size: '1G',
                 compress: true,
                 create_mode: '0644',
-                create: true,
+                create: true
               )
             end
           end
@@ -282,10 +260,9 @@ describe 'file_upload::upload' do
           before { params.merge!(data: '/foo/bar') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_cron('file_upload-test_upload')
-            .with(
+            is_expected.to contain_cron('file_upload-test_upload').with(
               ensure: 'present',
-              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /foo/bar -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\'',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /foo/bar -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\''
             )
           end
         end
@@ -320,7 +297,7 @@ describe 'file_upload::upload' do
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'bwlimit' do
-          before { params.merge!(bwlimit: 10001) }
+          before { params.merge!(bwlimit: 100_01) }
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'bwlimit' do
@@ -328,7 +305,7 @@ describe 'file_upload::upload' do
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'destination_host' do
-          before { params.merge!(destination_host: 'http://foo.bar' ) }
+          before { params.merge!(destination_host: 'http://foo.bar') }
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'destination_host' do

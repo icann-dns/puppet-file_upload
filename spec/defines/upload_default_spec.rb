@@ -6,7 +6,7 @@ describe 'file_upload::upload' do
   # to the specific context in the spec/shared_contexts.rb file
   # Note: you can only use a single hiera context per describe/context block
   # rspec-puppet does not allow you to swap out hiera data on a per test block
-  #include_context :hiera
+  # include_context :hiera
 
   let(:title) { 'XXreplace_meXX' }
 
@@ -44,9 +44,7 @@ describe 'file_upload::upload' do
   # add these two lines in a single test block to enable puppet and hiera debug mode
   # Puppet::Util::Log.level = :debug
   # Puppet::Util::Log.newdestination(:console)
-  let (:pre_condition) {
-    "class {'::file_upload': }"
-  }
+  let(:pre_condition) { "class {'::file_upload': }" }
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
@@ -55,14 +53,14 @@ describe 'file_upload::upload' do
       describe 'check default config' do
         it do
           is_expected.to compile.and_raise_error(
-            /destination_host/
+            %r{destination_host}
           ).and_raise_error(
-            /destination_path/
+            %r{destination_path}
           ).and_raise_error(
-            /ssh_key_source/
+            %r{ssh_key_source}
           ).and_raise_error(
-            /ssh_user/
-          ) 
+            %r{ssh_user}
+          )
         end
       end
     end

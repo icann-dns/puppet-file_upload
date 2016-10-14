@@ -6,7 +6,7 @@ describe 'file_upload' do
   # to the specific context in the spec/shared_contexts.rb file
   # Note: you can only use a single hiera context per describe/context block
   # rspec-puppet does not allow you to swap out hiera data on a per test block
-  #include_context :hiera
+  # include_context :hiera
   let(:node) { 'file_upload.example.com' }
 
   # below is the facts hash that gives you the ability to mock
@@ -39,12 +39,11 @@ describe 'file_upload' do
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }
         it do
-          is_expected.to contain_file('/usr/local/bin/file_upload.sh')
-            .with(
-              ensure: 'present',
-              mode: '0755',
-              source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh',
-            )
+          is_expected.to contain_file('/usr/local/bin/file_upload.sh').with(
+            ensure: 'present',
+            mode: '0755',
+            source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh'
+          )
         end
       end
       describe 'Change Defaults' do
@@ -52,12 +51,11 @@ describe 'file_upload' do
           before { params.merge!(upload_script: '/tmp/foobar') }
           it { is_expected.to compile }
           it do
-            is_expected.to contain_file('/tmp/foobar')
-              .with(
-                ensure: 'present',
-                mode: '0755',
-                source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh',
-              )
+            is_expected.to contain_file('/tmp/foobar') .with(
+              ensure: 'present',
+              mode: '0755',
+              source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh'
+            )
           end
         end
       end
