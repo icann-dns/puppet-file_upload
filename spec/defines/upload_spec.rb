@@ -297,7 +297,7 @@ describe 'file_upload::upload' do
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'bwlimit' do
-          before { params.merge!(bwlimit: 100_01) }
+          before { params.merge!(bwlimit: 10_001) }
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'bwlimit' do
