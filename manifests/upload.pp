@@ -2,21 +2,21 @@
 #
 define file_upload::upload (
   Enum['present', 'absent']           $ensure              = present,
-  Tea::Absolutepath                   $key_dir             = '/root/.ssh',
+  Stdlib::Absolutepath                $key_dir             = '/root/.ssh',
   Boolean                             $clean_known_hosts   = false,
   Boolean                             $delete              = false,
   Boolean                             $remove_source_files = false,
   Array[String]                       $patterns            = ['*.pcap.bz2', '*.pcap.xz'],
   Integer[0,10000]                    $bwlimit             = 100,
   Variant[Tea::Fqdn, Tea::Ip_address] $destination_host    = undef,
-  Tea::Absolutepath                   $destination_path    = undef,
+  String                              $destination_path    = undef,
   Tea::Puppetsource                   $ssh_key_source      = undef,
   String                              $ssh_user            = undef,
-  Tea::Absolutepath                   $log_file            = "/var/log/file_upload-${name}.log",
+  Stdlib::Absolutepath                $log_file            = "/var/log/file_upload-${name}.log",
   Boolean                             $logrotate_enable    = true,
   Integer[1,100]                      $logrotate_rotate    = 5,
   String                              $logrotate_size      = '100M',
-  Tea::Absolutepath                   $data                = '/opt/pcap',
+  Stdlib::Absolutepath                $data                = '/opt/pcap',
 ) {
 
   $_remove_source_files = $remove_source_files ? {
