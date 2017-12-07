@@ -2,12 +2,8 @@ fixtures:
     symlinks:
       file_upload: "#{source_dir}"
     repositories:
-      stdlib:
-        repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
-        ref: 4.12.0
-      tea:
-        repo: https://github.com/icann-dns/puppet-tea.git
-        ref: 0.2.4
+      stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+      tea: https://github.com/icann-dns/puppet-tea.git
       logrotate:
         repo: https://github.com/icann-dns/puppet-logrotate
         ref: v1.4.0-ICANN-1
