@@ -65,7 +65,7 @@ then
   # we use dev null here to create the parent dir
   # we only create parents not grandparents
   PARENT_DIR=$(dirname ${DESTINATION_DIR})
-  rsync -ae "${SSH}" /dev/null ${DESTINATION_HOST}:${PARENT_DIR}/
+  rsync -ae "${SSH}" /dev/null ${DESTINATION_HOST}:${PARENT_DIR}/ &> /dev/null
 fi
 # 2 outputs managed by tee
 ${RSYNC} -e "${SSH}" ${SOURCE_DIR}/ ${DESTINATION_HOST}:${DESTINATION_DIR} | \
