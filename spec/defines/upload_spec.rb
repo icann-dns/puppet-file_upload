@@ -116,6 +116,16 @@ describe 'file_upload::upload' do
             )
           end
         end
+        context 'create_parent' do
+          before { params.merge!(create_parent: true) }
+          it { is_expected.to compile }
+          it do
+            is_expected.to contain_cron('file_upload-test_upload').with(
+              ensure: 'present',
+              command: '/usr/bin/flock -n /var/lock/file_upload-test_upload.lock /usr/local/bin/file_upload.sh -s /opt/pcap -D upload.example.com -d /opt/upload -u dns-oarc -k /root/.ssh/test_upload -b 100 -L /var/log/file_upload-test_upload.log    -P \'*.pcap.bz2 *.pcap.xz\' -p'
+            )
+          end
+        end
         context 'clean_known_hosts' do
           before { params.merge!(clean_known_hosts: true) }
           it { is_expected.to compile }
