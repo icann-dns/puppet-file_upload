@@ -17,7 +17,7 @@
 set -f
 export PATH=/usr/bin:/bin
 
-while getopts "s:D:d:u:k:b:P:eEL:C" opt; do
+while getopts "s:D:d:u:k:b:P:eEL:Cp" opt; do
   case $opt in
 	s ) SOURCE_DIR=${OPTARG} ;;
 	D ) DESTINATION_HOST=${OPTARG} ;;
@@ -30,6 +30,7 @@ while getopts "s:D:d:u:k:b:P:eEL:C" opt; do
 	E ) REMOVE_SOURCE_FILES=YES ;;
 	L ) LOG_FILE=${OPTARG} ;;
 	C ) CLEAN_KNOWN_HOSTS=YES ;;	
+	p ) CREATE_PARENTS_DIRS=YES ;;	
   esac
 done
 
@@ -59,6 +60,13 @@ fi
 OLDNOW=$(date +%s)
 echo "${OLDNOW}: Transfer-START" >> ${LOG_FILE}
 
+if [ "${CREATE_PARENTS_DIRS}" == "YES" ]
+then
+  # we use dev null here to create the parent dir
+  # we only create parents not grandparents
+  PARENT_DIR=$(dirname ${DESTINATION_DIR})
+  rsync -ae "${SSH}" /dev/null ${DESTINATION_HOST}:${PARENT_DIR}/
+fi
 # 2 outputs managed by tee
 ${RSYNC} -e "${SSH}" ${SOURCE_DIR}/ ${DESTINATION_HOST}:${DESTINATION_DIR} | \
 	tee >(gawk '$1=="<f+++++++++" {printf "%s: Transferred: %s\n", systime(), $2}' >> ${LOG_FILE} ) | \
