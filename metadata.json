@@ -1,6 +1,6 @@
 {
   "name": "icann-file_upload",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "john.bond@icann.org",
   "summary": "small modules to install file_upload and custom modules",
   "license": "MPL-2.0",
