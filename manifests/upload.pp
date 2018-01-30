@@ -17,6 +17,7 @@ define file_upload::upload (
   Integer[1,100]                      $logrotate_rotate    = 5,
   String                              $logrotate_size      = '100M',
   Stdlib::Absolutepath                $data                = '/opt/pcap',
+  Boolean                             $create_parent       = false,
 ) {
 
   $_remove_source_files = $remove_source_files ? {
@@ -31,10 +32,14 @@ define file_upload::upload (
     true    => '-C',
     default => '',
   }
+  $_create_parent = $create_parent ? {
+    true    => '-p',
+    default => '',
+  }
   $_patterns = join($patterns, ' ')
 
   $ssh_key_file = "${key_dir}/${name}"
-  $command = "/usr/bin/flock -n /var/lock/file_upload-${name}.lock ${::file_upload::upload_script} -s ${data} -D ${destination_host} -d ${destination_path} -u ${ssh_user} -k ${ssh_key_file} -b ${bwlimit} -L ${log_file} ${_clean_known_hosts} ${_delete} ${_remove_source_files} -P '${_patterns}'"
+  $command = "/usr/bin/flock -n /var/lock/file_upload-${name}.lock ${::file_upload::upload_script} -s ${data} -D ${destination_host} -d ${destination_path} -u ${ssh_user} -k ${ssh_key_file} -b ${bwlimit} -L ${log_file} ${_clean_known_hosts} ${_delete} ${_remove_source_files} -P '${_patterns}' ${_create_parent}"
 
   file {$ssh_key_file:
     ensure => $ensure,
