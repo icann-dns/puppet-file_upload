@@ -43,7 +43,7 @@ done
 LOGGER="/usr/bin/logger -t file_upload_${UPLOAD_HOST}"
 
 if [ "${CLEAN_KNOWN_HOSTS}" == "YES" ] ; then
-	ssh-keygen -f "/root/.ssh/known_hosts" -R ${UPLOAD_HOST}  >/dev/null 2>&1
+	ssh-keygen -f "/root/.ssh/known_hosts" -R ${UPLOAD_HOST} >/dev/null 2>&1
 fi
 
 SSH="/usr/bin/ssh -q -o PasswordAuthentication=no -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey -i ${SSH_KEY_FILE} -l ${SSH_USER}"
@@ -57,20 +57,28 @@ then
 	RSYNC="$RSYNC --remove-source-files"
 fi
 
-OLDNOW=$(date +%s)
-echo "${OLDNOW}: Transfer-START" >> ${LOG_FILE}
-
-if [ "${CREATE_PARENTS_DIRS}" == "YES" ]
+if find $SOURCE_DIR -name $PATTERNS -printf 1 -quit | grep -q 1
 then
-  # we use dev null here to create the parent dir
-  # we only create parents not grandparents
-  PARENT_DIR=$(dirname ${DESTINATION_DIR})
-  rsync -ae "${SSH}" /dev/null ${DESTINATION_HOST}:${PARENT_DIR}/ &> /dev/null
-fi
-# 2 outputs managed by tee
-${RSYNC} -e "${SSH}" ${SOURCE_DIR}/ ${DESTINATION_HOST}:${DESTINATION_DIR} | \
+  ## if files exists to transfer then we do an rsync
+
+  OLDNOW=$(date +%s)
+  echo "${OLDNOW}: Transfer-START" >> ${LOG_FILE}
+
+  if [ "${CREATE_PARENTS_DIRS}" == "YES" ]
+  then
+    # we use dev null here to create the parent dir
+    # we only create parents not grandparents
+    PARENT_DIR=$(dirname ${DESTINATION_DIR})
+    rsync -ae "${SSH}" /dev/null ${DESTINATION_HOST}:${PARENT_DIR}/ &> /dev/null
+  fi
+  # 2 outputs managed by tee
+  ${RSYNC} -e "${SSH}" ${SOURCE_DIR}/ ${DESTINATION_HOST}:${DESTINATION_DIR} | \
 	tee >(gawk '$1=="<f+++++++++" {printf "%s: Transferred: %s\n", systime(), $2}' >> ${LOG_FILE} ) | \
 	gawk '$1=="sent" {printf "%s: sent=%s, received=%s, rate=%s\n", systime(), $2, $5, $7}' >> ${LOG_FILE}
 
-NOW=$(date +%s)
-echo "${OLDNOW}: Transfer-END after $(( NOW - OLDNOW )) secs" >> ${LOG_FILE}
+  NOW=$(date +%s)
+  echo "${OLDNOW}: Transfer-END after $(( NOW - OLDNOW )) secs" >> ${LOG_FILE}
+
+else
+  echo "No files to transfer" >> ${LOG_FILE}
+fi
