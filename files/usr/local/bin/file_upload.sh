@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (c) 2013, Internet Corporation for Assigned Names and Numbers
+# Copyright (c) 2019, Internet Corporation for Assigned Names and Numbers
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -13,8 +13,9 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# 2016 ICANN DNS Engineering
+# 2019 ICANN DNS Engineering
 set -f
+#set -x
 export PATH=/usr/bin:/bin
 
 while getopts "s:D:d:u:k:b:P:eEL:Cp" opt; do
@@ -57,8 +58,7 @@ then
 	RSYNC="$RSYNC --remove-source-files"
 fi
 
-if find $SOURCE_DIR -name $PATTERNS -printf 1 -quit | grep -q 1
-then
+if test -n "$(find ${SOURCE_DIR} -name ${PATTERNS[@]} -maxdepth 1 -print -quit)" ; then
   ## if files exists to transfer then we do an rsync
 
   OLDNOW=$(date +%s)
