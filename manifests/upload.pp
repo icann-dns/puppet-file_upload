@@ -18,6 +18,7 @@ define file_upload::upload (
   String                              $logrotate_size      = '100M',
   Stdlib::Absolutepath                $data                = '/opt/pcap',
   Boolean                             $create_parent       = false,
+  String                              $minute_frequency    = "[fqdn_rand(30), fqdn_rand(30) + 30]",
 ) {
 
   $_remove_source_files = $remove_source_files ? {
@@ -49,7 +50,7 @@ define file_upload::upload (
   cron {"file_upload-${name}":
     ensure  => $ensure,
     command => $command,
-    minute  => [fqdn_rand(30), fqdn_rand(30) + 30],
+    minute  => $minute_frequency,
   }
 
   if $logrotate_enable and $::kernel != 'FreeBSD' {
