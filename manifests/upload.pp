@@ -18,7 +18,7 @@ define file_upload::upload (
   String                              $logrotate_size      = '100M',
   Stdlib::Absolutepath                $data                = '/opt/pcap',
   Boolean                             $create_parent       = false,
-  Array[minute]                       $minute_frequency    = [ fqdn_rand(30), fqdn_rand(30) + 30 ],
+  Array[Integer]                       $minute_frequency    = [ fqdn_rand(30), fqdn_rand(30) + 30 ],
 ) {
 
   $_remove_source_files = $remove_source_files ? {
