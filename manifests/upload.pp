@@ -20,7 +20,6 @@ define file_upload::upload (
   Boolean                             $create_parent       = false,
   Array[Integer]                      $minute_frequency    = [ fqdn_rand(60), ],
   Optional[Array[Integer]]            $hour_frequency      = undef,
-  Optional[Array[String]]             $monthday            = undef,
 ) {
 
   $_remove_source_files = $remove_source_files ? {
@@ -56,18 +55,11 @@ define file_upload::upload (
     $_hour_frequency = '*'
   }
 
-  if $monthday {
-    $_monthday = $monthday
-  } else {
-    $_monthday = '*'
-  }
-
   cron {"file_upload-${name}":
     ensure   => $ensure,
     command  => $command,
     minute   => $minute_frequency,
     hour     => $_hour_frequency,
-    monthday => $_monthday,
   }
 
   if $logrotate_enable and $::kernel != 'FreeBSD' {
