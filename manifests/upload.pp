@@ -19,8 +19,8 @@ define file_upload::upload (
   Stdlib::Absolutepath                $data                = '/opt/pcap',
   Boolean                             $create_parent       = false,
   Array[Integer]                      $minute_frequency    = [ fqdn_rand(60), ],
-  Optional[Array[Integer]]            $hour_frequency      = ~
-  Optional[Array[Integer]]            $monthday            = ~
+  Optional[Array[Integer]]            $hour_frequency      = undef,
+  Optional[Array[Integer]]            $monthday            = undef,
 ) {
 
   $_remove_source_files = $remove_source_files ? {
