@@ -58,7 +58,7 @@ then
 	RSYNC="$RSYNC --remove-source-files"
 fi
 
-if test -n "$(find ${SOURCE_DIR} -name ${PATTERNS[@]} -maxdepth 1 -print -quit)" ; then
+if test -n "$(find ${SOURCE_DIR} -maxdepth 1 -name ${PATTERNS[@]} -print -quit)" ; then
   ## if files exists to transfer then we do an rsync
 
   OLDNOW=$(date +%s)
