@@ -49,7 +49,7 @@ fi
 
 SSH="/usr/bin/ssh -q -o PasswordAuthentication=no -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey -i ${SSH_KEY_FILE} -l ${SSH_USER}"
 
-RSYNC="rsync -avi ${INCLUDES} --exclude=/* --exclude=*.log --bwlimit=${BWLIMIT}"
+RSYNC="rsync -avi ${INCLUDES} --exclude=/* --exclude=*.log --bwlimit=${BWLIMIT} --chmod=g+w"
 
 if [ "${DELETE}" == "YES" ] ; then
 	RSYNC="$RSYNC --delete"
