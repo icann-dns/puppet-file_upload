@@ -20,7 +20,7 @@ define file_upload::upload (
   Boolean                             $create_parent       = false,
   Array[Integer]                      $minute_frequency    = [ fqdn_rand(60), ],
   Optional[Array[Integer]]            $hour_frequency      = undef,
-  String                              $cron_env            = 'MAILTO=none',
+  String                              $cron_env            = 'MAILTO=""',
 ) {
 
   $_remove_source_files = $remove_source_files ? {
