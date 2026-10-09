@@ -126,4 +126,4 @@ Used to create upload jobs
 
 ## Limitations
 
-This module is tested on Ubuntu 12.04, and 14.04 and FreeBSD 10
+This module is tested on Ubuntu 20.04 and 22.04 and FreeBSD 10
