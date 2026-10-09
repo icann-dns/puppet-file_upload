@@ -1,10 +1,5 @@
 fixtures:
-    symlinks:
-      file_upload: "#{source_dir}"
     repositories:
       stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
-      tea: https://github.com/icann-dns/puppet-tea.git
-      logrotate:
-        repo: https://github.com/icann-dns/puppet-logrotate
-        ref: v1.4.0-ICANN-1
-    forge_modules:
+      logrotate: https://github.com/icann-dns/puppet-logrotate
+      cron: https://github.com/puppetlabs/puppetlabs-cron_core

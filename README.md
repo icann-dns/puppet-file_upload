@@ -52,8 +52,8 @@ class {'::file_upload' }
 You can pass URI's which will be handed to puppet and passed to a file type source parameter.
 
 ```puppet
-class {'::file_upload' 
-  uploads => { 
+class {'::file_upload'
+  uploads => {
     'test' => {
       destination_host => 'upload.example.com',
       destination_path => '/srv/upload',
@@ -92,7 +92,7 @@ file_upload::uploads:
 
 Main class, includes all other classes
 
-##### Parameters 
+##### Parameters
 
 * `upload_script` (Tea::Puppetsource, Default: '/usr/local/bin/file_upload.sh'): Where to install the upload script
 * `modules` (Hash[file_upload::upload], Default: {}): A Hash of file_upload::upload objects to be passtd to `create_resources()`
@@ -126,4 +126,4 @@ Used to create upload jobs
 
 ## Limitations
 
-This module is tested on Ubuntu 12.04, and 14.04 and FreeBSD 10 
+This module is tested on Ubuntu 12.04, and 14.04 and FreeBSD 10
