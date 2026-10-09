@@ -19,6 +19,6 @@ function file_upload::argparse (
       # handle spaces, double quotes, etc.
       default => " ${_arg_prefix}${value[0]}${separator}${value[1].shell_escape}",
     }
-    "${memo}${args_str}".strip
+    "${memo}${args_str}"
   }
 }

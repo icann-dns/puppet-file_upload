@@ -52,7 +52,7 @@ class {'::file_upload' }
 You can pass URI's which will be handed to puppet and passed to a file type source parameter.
 
 ```puppet
-class { '::file_upload':
+class { 'file_upload':
   uploads => {
     'test' => {
       destination_host => 'upload.example.com',
