@@ -2,21 +2,25 @@
 #
 define file_upload::upload (
   Enum['present', 'absent']           $ensure              = present,
-  Tea::Absolutepath                   $key_dir             = '/root/.ssh/',
+  Stdlib::Absolutepath                $key_dir             = '/root/.ssh',
   Boolean                             $clean_known_hosts   = false,
   Boolean                             $delete              = false,
   Boolean                             $remove_source_files = false,
   Array[String]                       $patterns            = ['*.pcap.bz2', '*.pcap.xz'],
   Integer[0,10000]                    $bwlimit             = 100,
   Variant[Tea::Fqdn, Tea::Ip_address] $destination_host    = undef,
-  Tea::Absolutepath                   $destination_path    = undef,
-  String                              $ssh_key_source      = undef,
+  String                              $destination_path    = undef,
+  Tea::Puppetsource                   $ssh_key_source      = undef,
   String                              $ssh_user            = undef,
-  Tea::Absolutepath                   $log_file            = "/var/log/file_upload-${name}.log",
+  Stdlib::Absolutepath                $log_file            = "/var/log/file_upload-${name}.log",
   Boolean                             $logrotate_enable    = true,
   Integer[1,100]                      $logrotate_rotate    = 5,
   String                              $logrotate_size      = '100M',
-  Tea::Absolutepath                   $data                = '/opt/pcap',
+  Stdlib::Absolutepath                $data                = '/opt/pcap',
+  Boolean                             $create_parent       = false,
+  Array[Integer]                      $minute_frequency    = [ fqdn_rand(60), ],
+  Optional[Array[Integer]]            $hour_frequency      = undef,
+  String                              $cron_env            = 'MAILTO=""',
 ) {
 
   $_remove_source_files = $remove_source_files ? {
@@ -31,20 +35,33 @@ define file_upload::upload (
     true    => '-C',
     default => '',
   }
+  $_create_parent = $create_parent ? {
+    true    => '-p',
+    default => '',
+  }
   $_patterns = join($patterns, ' ')
 
   $ssh_key_file = "${key_dir}/${name}"
-  $command = "/usr/bin/flock -n /var/lock/file_upload-${name}.lock ${::file_upload::upload_script} -s ${data} -D ${destination_host} -d ${destination_path} -u ${ssh_user} -k ${ssh_key_file} -b ${bwlimit} -L ${log_file} ${_clean_known_hosts} ${_delete} ${_remove_source_files} -P '${_patterns}'"
+  $command = "/usr/bin/flock -n /var/lock/file_upload-${name}.lock ${::file_upload::upload_script} -s ${data} -D ${destination_host} -d ${destination_path} -u ${ssh_user} -k ${ssh_key_file} -b ${bwlimit} -L ${log_file} ${_clean_known_hosts} ${_delete} ${_remove_source_files} -P '${_patterns}' ${_create_parent}"
 
   file {$ssh_key_file:
     ensure => $ensure,
     mode   => '0600',
     source => $ssh_key_source,
   }
+
+  if $hour_frequency {
+    $_hour_frequency = $hour_frequency
+  } else {
+    $_hour_frequency = '*'
+  }
+
   cron {"file_upload-${name}":
-    ensure  => $ensure,
-    command => $command,
-    minute  => [fqdn_rand(30), fqdn_rand(30) + 30],
+    ensure      => $ensure,
+    command     => $command,
+    minute      => $minute_frequency,
+    hour        => $_hour_frequency,
+    environment => $cron_env,
   }
 
   if $logrotate_enable and $::kernel != 'FreeBSD' {
