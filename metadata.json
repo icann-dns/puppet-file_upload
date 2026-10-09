@@ -8,7 +8,7 @@
   "project_page": "https://github.com/icann-dns/puppet-file_upload",
   "issues_url": "https://github.com/icann-dns/puppet-file_upload/issues",
   "dependencies": [
-    { "name": "puppetlabs-stdlib", "version_requirement": ">= 2.0.0 <3.0.0" },
+    { "name": "puppetlabs-stdlib", "version_requirement": ">= 9.7.0 <10.0.0" },
     { "name": "puppetlabs-cron_core", "version_requirement": ">= 8.0.0 <10.0.0" }
   ],
   "requirements": [
