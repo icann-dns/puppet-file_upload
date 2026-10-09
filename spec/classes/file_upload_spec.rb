@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'file_upload' do
@@ -21,11 +23,12 @@ describe 'file_upload' do
   # while all required parameters will require you to add a value
   let(:params) do
     {
-      #:upload_script => "/usr/local/bin/file_upload.sh",
-      #:uploads => {},
+      # :upload_script => "/usr/local/bin/file_upload.sh",
+      # :uploads => {},
 
     }
   end
+
   # add these two lines in a single test block to enable puppet and hiera debug mode
   # Puppet::Util::Log.level = :debug
   # Puppet::Util::Log.newdestination(:console)
@@ -36,40 +39,51 @@ describe 'file_upload' do
       let(:facts) do
         facts
       end
+
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }
+
         it do
           is_expected.to contain_file('/usr/local/bin/file_upload.sh').with(
-            ensure: 'present',
+            ensure: 'file',
             mode: '0755',
-            source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh'
+            source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh',
           )
         end
       end
+
       describe 'Change Defaults' do
         context 'upload_script' do
           before { params.merge!(upload_script: '/tmp/foobar') }
+
           it { is_expected.to compile }
+
           it do
-            is_expected.to contain_file('/tmp/foobar') .with(
-              ensure: 'present',
+            is_expected.to contain_file('/tmp/foobar').with(
+              ensure: 'file',
               mode: '0755',
-              source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh'
+              source: 'puppet:///modules/file_upload/usr/local/bin/file_upload.sh',
             )
           end
         end
       end
+
       describe 'check bad type' do
         context 'upload_script bool' do
           before { params.merge!(upload_script: true) }
+
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
+
         context 'upload_script string' do
           before { params.merge!(upload_script: 'asd') }
+
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
+
         context 'uploads' do
           before { params.merge!(uploads: true) }
+
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
       end
